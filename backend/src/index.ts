@@ -19,8 +19,13 @@ app.get("/", (_, res:Response)=>{
 
 app.post("/login",async (req:Request,res:Response)=>{
   try{
-    const userFound = await User.find(req.body).exec()
-    res.status(302).send(userFound[0])
+    const { email } = req.body
+    const userFound = await User.findOne({ email }).exec()
+    if(userFound==null){
+      res.status(200).send({})
+      return
+    }
+    res.status(302).send(userFound)
   }catch(error){
     const err = error as Error
     console.log(err.message)
