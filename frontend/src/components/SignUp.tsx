@@ -10,12 +10,15 @@ export const SignUpComponent:React.FC<{setHeaderOption:React.Dispatch<React.SetS
       return alert("Contraseñas deben ser iguales")
     }
     console.log(body)
-    fetch("http://localhost:3000/registrar", {
+    fetch("http://localhost:3000/signUp", {
       method:"POST",
       headers:{
         "Content-Type":"application/json"
       },
       body:JSON.stringify(body)
+    }).then((promise)=> promise.json()).then(response=>{
+      console.log(response)
+      setHeaderOption(1)
     })
   }
 
