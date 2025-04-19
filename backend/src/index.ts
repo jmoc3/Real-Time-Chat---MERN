@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express, {Request, Response} from "express"
+import mongoose from "mongoose"
 import cors from "cors"
+import { User } from './models/users.model.js';
 
 const app = express()
 app.use(express.json())
@@ -12,15 +14,30 @@ app.use(cors({
 }));
 
 app.get("/", (req:Request, res:Response)=>{
-  res.send("In the back of my mind")
+  res.status(200).send("In the back of my mind")
 })
 
-app.post("/registrar",(req:Request, res:Response)=>{
-  const {email, password} = req.body
-  console.log(email, password)
-  res.send("Enviado")
+app.post("/registrar",async (req:Request, res:Response)=>{
+  try{
+    const {email, password} = req.body
+    const user = await User.create(req.body)  
+    res.status(201).send({message:"User created succesfully", data:user})
+  }catch(error){
+    const err = error as Error
+    console.log(err.message)
+    res.status(500).send({message:err.message})
+  }
 })
 
-app.listen(process.env.PORT, ()=>{
-  console.log("Server activated in port: ", process.env.PORT)
-})
+mongoose.connect(process.env.MONGODBURL as string)
+  .then(()=>{
+    console.log("Connected to mongo")
+    app.listen(process.env.PORT, ()=>{
+      console.log("Server activated in port: ", process.env.PORT)
+    })
+
+  })
+  .catch((error)=>{
+    console.log("connection failed")
+    console.log(error)
+  })
