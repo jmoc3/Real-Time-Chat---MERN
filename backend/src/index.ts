@@ -20,7 +20,7 @@ app.get("/", (_, res:Response)=>{
 app.get("/login",async (req:Request,res:Response)=>{
   try{
     const userFound = await User.find(req.body).exec()
-    res.status(200).send(userFound[0])
+    res.status(302).send(userFound[0])
   }catch(error){
     const err = error as Error
     console.log(err.message)
