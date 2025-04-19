@@ -17,7 +17,7 @@ app.get("/", (_, res:Response)=>{
   res.status(200).send("In the back of my mind")
 })
 
-app.get("/login",async (req:Request,res:Response)=>{
+app.post("/login",async (req:Request,res:Response)=>{
   try{
     const userFound = await User.find(req.body).exec()
     res.status(302).send(userFound[0])
