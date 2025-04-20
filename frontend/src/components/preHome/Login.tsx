@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form";
 import { BsFillSuitClubFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 export const LoginComponent:React.FC<{setHeaderOption:React.Dispatch<React.SetStateAction<number>>}> = ({setHeaderOption}) => {
 
   const {register, handleSubmit, formState:{errors}, reset } = useForm()
+  const navigate = useNavigate()
   const loginFunction = (body:any) => {
     fetch("http://localhost:3000/login",{
       method:"POST",
@@ -17,7 +19,7 @@ export const LoginComponent:React.FC<{setHeaderOption:React.Dispatch<React.SetSt
         return alert("User not founded")
       }
 
-      alert("Redirecting...")
+      navigate('/home')
     })
   }
 

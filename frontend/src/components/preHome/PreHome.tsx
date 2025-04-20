@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Header } from "./Header"
+import { Header } from "../Header"
 import { LoginComponent } from "./Login"
 import { SignUpComponent } from "./SignUp"
 
@@ -8,7 +8,7 @@ export const PreHomeComponent:React.FC = () => {
   
   return (
     <div className='w-full h-screen flex flex-col items-center justify-between p-12'>
-      <Header setHeaderOption={setHeaderOption}/>
+      <Header options={["Ingresar", "Registrarse"]} setHeaderOption={setHeaderOption}/>
 
       {
         headerOption==1 ? 
