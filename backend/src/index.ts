@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import express, {Request, Response} from "express"
+import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
-import { User } from './models/users.model.js';
+import { authRouter } from './routes/auth.routes.js';
 
 const app = express()
 app.use(express.json())
@@ -13,36 +13,8 @@ app.use(cors({
   optionsSuccessStatus: 204
 }));
 
-app.get("/", (_, res:Response)=>{
-  res.status(200).send("In the back of my mind")
-})
+app.use('/auth', authRouter)
 
-app.post("/login",async (req:Request,res:Response)=>{
-  try{
-    const { email } = req.body
-    const userFound = await User.findOne({ email }).exec()
-    if(userFound==null){
-      res.status(200).send({})
-      return
-    }
-    res.status(302).send(userFound)
-  }catch(error){
-    const err = error as Error
-    console.log(err.message)
-    res.status(500).send()
-  }
-})
-
-app.post("/signUp",async (req:Request, res:Response)=>{
-  try{
-    const user = await User.create(req.body)  
-    res.status(201).send({message:"User created succesfully"})
-  }catch(error){
-    const err = error as Error
-    console.log(err.message)
-    res.status(500).send({message:err.message})
-  }
-})
 
 mongoose.connect(process.env.MONGODBURL as string)
   .then(()=>{
