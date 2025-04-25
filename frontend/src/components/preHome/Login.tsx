@@ -7,7 +7,7 @@ export const LoginComponent:React.FC<{setHeaderOption:React.Dispatch<React.SetSt
   const {register, handleSubmit, formState:{errors}, reset } = useForm()
   const navigate = useNavigate()
   const loginFunction = (body:any) => {
-    fetch("http://localhost:3000/login",{
+    fetch("http://localhost:3000/auth/login",{
       method:"POST",
       headers:{
         "Content-Type":"application/json"
@@ -18,7 +18,8 @@ export const LoginComponent:React.FC<{setHeaderOption:React.Dispatch<React.SetSt
       if(Object.values(res).length==0){
         return alert("User not founded")
       }
-
+      localStorage.setItem("token",res.token)
+      console.log("aaaa")
       navigate('/home')
     })
   }

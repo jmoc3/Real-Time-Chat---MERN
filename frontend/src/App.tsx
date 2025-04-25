@@ -1,6 +1,7 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { PreHomeComponent } from './components/preHome/PreHome'
+import { AuthComponent } from './components/Auth'
 import { HomeComponent } from './components/home/Home'
 function App() {
 
@@ -8,7 +9,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<PreHomeComponent/>}/>
-        <Route path='/home' element={<HomeComponent />}/>
+        <Route element={<AuthComponent />}>
+          <Route path='/home' element={<HomeComponent />}/>
+        </Route>
       </Routes>
     </BrowserRouter>
   )
