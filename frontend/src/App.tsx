@@ -9,9 +9,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<PreHomeComponent/>}/>
-        <Route element={<AuthComponent />}>
+        {/* <Route element={<AuthComponent />}> */}
           <Route path='/home' element={<HomeComponent />}/>
-        </Route>
+        {/* </Route> */}
       </Routes>
     </BrowserRouter>
   )

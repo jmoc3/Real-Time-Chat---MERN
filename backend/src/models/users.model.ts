@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema<UserT>({
   },
   password:{
     type:String,
-    require:true
+    require:true,
+    select:false
   }
 })
 

@@ -19,7 +19,7 @@ export const LoginComponent:React.FC<{setHeaderOption:React.Dispatch<React.SetSt
         return alert("User not founded")
       }
       localStorage.setItem("token",res.token)
-      console.log("aaaa")
+      localStorage.setItem("user",JSON.stringify(res))
       navigate('/home')
     })
   }

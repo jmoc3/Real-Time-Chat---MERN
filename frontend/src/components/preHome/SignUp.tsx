@@ -3,7 +3,7 @@ import { BsFillSuitClubFill } from "react-icons/bs";
 
 export const SignUpComponent:React.FC<{setHeaderOption:React.Dispatch<React.SetStateAction<number>>}> = ({setHeaderOption}) => {
 
-  const { register, handleSubmit, formState: {errors} , reset } = useForm()
+  const { register, handleSubmit} = useForm()
   
   const registerFunction = (body:any) => {
     if(body.password != body.confirmacion){
@@ -16,8 +16,7 @@ export const SignUpComponent:React.FC<{setHeaderOption:React.Dispatch<React.SetS
         "Content-Type":"application/json"
       },
       body:JSON.stringify(body)
-    }).then((promise)=> promise.json()).then(response=>{
-      console.log(response)
+    }).then((promise)=> promise.json()).then(_=>{
       setHeaderOption(1)
     })
   }

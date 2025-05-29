@@ -3,18 +3,21 @@ import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
 import { authRouter } from './routes/auth.routes.js';
+import { userRouter } from './routes/user.route.js';
+import { chatRouter } from './routes/chat.routes.js';
 
 const app = express()
 app.use(express.json())
 app.use(cors({
   origin: 'http://localhost:5173',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true,
   optionsSuccessStatus: 204
 }));
 
 app.use('/auth', authRouter)
-
+app.use('/users',userRouter)
+app.use('/chats',chatRouter)
 
 mongoose.connect(process.env.MONGODBURL as string)
   .then(()=>{

@@ -19,7 +19,7 @@ authRouter.post("/login",async (req:Request,res:Response)=>{
     }
 
     const jwtToken = jwt.sign({id:userFound.id,name:userFound.name,email:userFound.email}, process.env.JWT_SECRET!, {expiresIn:'1h'})
-    res.status(302).send({token:jwtToken})
+    res.status(302).send({user:userFound, token:jwtToken})
   }catch(error){
     const err = error as Error
     console.log(err.message)
