@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Chat } from "../models/chats.model.js";
+import { socket } from "../index.js";
 
 const chatRouter = Router()
 
@@ -68,12 +69,14 @@ chatRouter.post("/", async (req:Request,res:Response)=>{
 chatRouter.patch("/message/:userId/:chatId", async (req:Request,res:Response)=>{
   try{
     const message = req.body.message
+    const hour = req.body.time
     const chat = req.params.chatId
     const writer = req.params.userId
     
     Chat.findOne({_id:chat}).then(async (chat) => {
-      const messageAdded = await Chat.updateOne({_id:chat},{messages:[...chat!.messages,{user:writer,message}]})
-      console.log(messageAdded)
+      const messageAdded = await Chat.updateOne({_id:chat},{messages:[...chat!.messages,{user:writer,message,hour}]})
+      socket.emit("newMessage")
+      console.log("added: ", messageAdded)
       res.send({"Chat Updated":true})
     })
 

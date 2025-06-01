@@ -15,6 +15,7 @@ export const LoginComponent:React.FC<{setHeaderOption:React.Dispatch<React.SetSt
       body:JSON.stringify(body)
     }).then(async(promise)=> {
       const res = await promise.json()
+      console.log(res)
       if(Object.values(res).length==0){
         return alert("User not founded")
       }

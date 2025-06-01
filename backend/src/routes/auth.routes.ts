@@ -13,6 +13,7 @@ authRouter.post("/login",async (req:Request,res:Response)=>{
   try{
     const { email } = req.body
     const userFound = await User.findOne({ email }).exec() as UserT
+    console.log(userFound)
     if(userFound==null){
       res.status(200).send({})
       return

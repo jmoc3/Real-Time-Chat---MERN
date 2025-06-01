@@ -4,6 +4,8 @@ import { ChatComponent } from "./Chat"
 import { useForm } from "react-hook-form"
 import { BsFillSuitDiamondFill } from "react-icons/bs"
 import { ChatT, UserT } from "@/types"
+import { io } from "socket.io-client"
+export const socket = io("http://localhost:3000")
 
 export const HomeComponent:React.FC = () => {
 
@@ -12,7 +14,6 @@ export const HomeComponent:React.FC = () => {
   const [receptorChat, setReceptorChat] = useState<UserT>({_id:"",name:"",email:""}) 
   const [chatId, setChatId] = useState<string>("")
   const [chats, setChats] = useState<(UserT|string)[][]>([])
-  const [ res, setRes] = useState<any>()
     
   const { register, handleSubmit, reset } = useForm()
   const userProfile = JSON.parse(localStorage.getItem("user")!).user
@@ -59,7 +60,6 @@ export const HomeComponent:React.FC = () => {
   const fetchingChats = async() => {
     const resChatObjects = await fetch(`http://localhost:3000/chats/${userId}`)
     const chatObjects = (await resChatObjects.json()).chats
-    setRes(chatObjects)
     
     const receptorsId = chatObjects.map((record:ChatT) => {
       if(record.user_2==userId){
@@ -81,6 +81,7 @@ export const HomeComponent:React.FC = () => {
 
   useEffect(()=>{
       fetchingChats()
+      console.log("Chats")
   },[])
 
 

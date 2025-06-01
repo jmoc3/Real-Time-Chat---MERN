@@ -1,8 +1,10 @@
 import { ChatT, UserT } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { UseFormRegister, FieldValues, UseFormHandleSubmit, UseFormReset } from "react-hook-form";
 import { BsFillSuitDiamondFill } from "react-icons/bs";
-import { BsSuitSpadeFill } from "react-icons/bs";
+import { BsSuitSpadeFill, BsFileEarmarkArrowUp, BsFillMicFill } from "react-icons/bs";
+import { socket } from "./Home";
+
 
 interface ChatProps {
   userId:string,
@@ -17,17 +19,20 @@ interface ChatProps {
 }
 
 export const ChatComponent:React.FC<ChatProps> = ({userId, chatId,register, handleSubmit,reset, receptor, chats, receptorChat, sendRequest}) => {
-
+  
   const [chatInfo, setChatInfo] = useState<Record<string,string>[]>([{}])
+  const [newMessage, setNewMessage] = useState<boolean>(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const submitHandler  = (data:Record<string,string>)=>{
-    console.log(chatId)
+    console.log()
+    if(!data.message || data.message.split(" ").every(string=>string=="")) return
     fetch(`http://localhost:3000/chats/message/${userId}/${chatId}`,{
       method:"PATCH",
       headers:{
         "Content-type":"application/json"
       },
-      body:JSON.stringify({message:data.message})
+      body:JSON.stringify({message:data.message,time:`${(new Date()).getHours()}:${(new Date()).getMinutes()}:${(new Date()).getSeconds()}`})
     })
     reset()
   }
@@ -39,13 +44,22 @@ export const ChatComponent:React.FC<ChatProps> = ({userId, chatId,register, hand
       console.log(receptor)
       return record.user_1 == receptor || record.user_2 == receptor 
     })[0]
-    console.log(chat.messages)
+
     setChatInfo(chat.messages)
   }
 
+  socket.on("newMessage",()=>setNewMessage(!newMessage))
+  
   useEffect(()=>{
-    getMessages(receptor!)
-  },[receptor])
+    getMessages(receptor!).then(_=>{
+      setTimeout(()=>{
+        messagesEndRef.current?.scrollIntoView({behavior:"smooth"})
+      },100)
+    })
+    
+  },[receptor,newMessage])
+
+
 
   return (
     <div className="bg-card w-[30rem] h-full p-4 overflow-hidden">
@@ -73,12 +87,18 @@ export const ChatComponent:React.FC<ChatProps> = ({userId, chatId,register, hand
               {
                 chatInfo.length>0 &&
                 chatInfo.map(record => (
-                  <span className={` ${record.user==userId ? "opacity-90" : "self-start"} bg-sky-50 max-w-[90%] py-2 px-4 rounded w-fit"`}>{record.message}</span>
+                  <div className="flex flex-col items-end max-w-[90%]">
+                    <div className={`${record.user==userId ? "opacity-90" : "self-start"} bg-sky-50 py-2 px-4 rounded w-fit"`}>{record.message}</div>
+                    <span className="text-xs opacity-75">{record.hour}</span>
+                  </div>
                 ))
               }
+              <div ref={messagesEndRef}></div>
               </div>
-              <div className=" flex items-center gap-5 h-1/5 px-4">
+              <div className=" flex items-center gap-2 h-1/5 px-4">
                 <input {...register("message")} name="message" type="text" className="text-sm bg-card text-gray-700 border border-gray-600 rounded w-full px-2 py-1 outline-0" autoComplete="off"/>
+                <span onClick={()=>alert("Uploading File...")} className="h-fit p-1 rounded cursor-pointer"><BsFileEarmarkArrowUp className="text-xl"/></span>
+                <span onClick={()=>alert("Uploading sound...")} className="h-fit p-1 rounded cursor-pointer"><BsFillMicFill className="text-xl"/></span>
                 <button type="submit" className="h-fit p-2 bg-blue-700 rounded cursor-pointer"><BsSuitSpadeFill className="text-xl text-card"/></button>
               </div>
             </form>
