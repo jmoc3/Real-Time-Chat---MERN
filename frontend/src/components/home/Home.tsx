@@ -81,19 +81,21 @@ export const HomeComponent:React.FC = () => {
 
   useEffect(()=>{
       fetchingChats()
-      console.log("Chats")
-  },[])
+  },[chatId])
 
-
+  console.log(chats)
   return (
     <div className='w-full h-screen flex flex-col items-center p-8 gap-4'>
       <Header options={["Chats", "Inicio", "Perfil"]} setHeaderOption={setHeaderOption}/>
       <div className="h-full relative">
       <div className="bg-card rounded absolute top-0 translate-x-[-110%] left-0 flex flex-col gap-2">
         {
+          chats.length>0 ? 
           chats.map((record:any)=>(
             <span key={record[0]._id} onClick={()=>{setReceptorChat(record[0]);setReceptor(record[0]._id);setChatId(record[1])}} className="py-4 px-8 text-start cursor-pointer hover:bg-amber-50 transition-colors">{record[0].name}</span>
-          ))
+          )):(
+            <span className="py-4 px-8 text-start cursor-pointer hover:bg-amber-50 transition-colors">...</span>
+          )
         }
       </div>
 

@@ -23,9 +23,10 @@ export const ChatComponent:React.FC<ChatProps> = ({userId, chatId,register, hand
   const [chatInfo, setChatInfo] = useState<Record<string,string>[]>([{}])
   const [newMessage, setNewMessage] = useState<boolean>(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [isLoadingMessage, setIsLoadingMessage] = useState<boolean>(false) 
 
   const submitHandler  = (data:Record<string,string>)=>{
-    console.log()
+    setIsLoadingMessage(true)
     if(!data.message || data.message.split(" ").every(string=>string=="")) return
     fetch(`http://localhost:3000/chats/message/${userId}/${chatId}`,{
       method:"PATCH",
@@ -33,6 +34,11 @@ export const ChatComponent:React.FC<ChatProps> = ({userId, chatId,register, hand
         "Content-type":"application/json"
       },
       body:JSON.stringify({message:data.message,time:`${(new Date()).getHours()}:${(new Date()).getMinutes()}:${(new Date()).getSeconds()}`})
+    }).then(_ => {
+        setIsLoadingMessage(false)
+    }).catch(err => {
+      console.log(err)
+      setIsLoadingMessage(false)
     })
     reset()
   }
@@ -84,6 +90,7 @@ export const ChatComponent:React.FC<ChatProps> = ({userId, chatId,register, hand
                 <span className="opacity-50">{receptorChat.email}</span>
               </div>
               <div className={`w-full max-h-[15rem] px-2 flex flex-col gap-2 text-sm items-end overflow-auto`}>
+              
               {
                 chatInfo.length>0 &&
                 chatInfo.map(record => (
@@ -93,8 +100,12 @@ export const ChatComponent:React.FC<ChatProps> = ({userId, chatId,register, hand
                   </div>
                 ))
               }
+              
               <div ref={messagesEndRef}></div>
               </div>
+              
+              <span className={`px-4 text-xs opacity-0 ${ isLoadingMessage && "opacity-60"}`}>Loading Message...</span>
+      
               <div className=" flex items-center gap-2 h-1/5 px-4">
                 <input {...register("message")} name="message" type="text" className="text-sm bg-card text-gray-700 border border-gray-600 rounded w-full px-2 py-1 outline-0" autoComplete="off"/>
                 <span onClick={()=>alert("Uploading File...")} className="h-fit p-1 rounded cursor-pointer"><BsFileEarmarkArrowUp className="text-xl"/></span>
